@@ -1,0 +1,25 @@
+<section style="font-family: Arial, sans-serif; color: #333; max-width: 880px; margin: 0 auto;">
+    <h1 style="color: #F1972B; border-bottom: 3px solid #F1972B; padding-bottom: 8px;">AI Timeout Configuration</h1>
+    <p style="font-size: 16px;">Sets the read timeout of AI provider requests with a system parameter.</p>
+
+    <h2 style="color: #F1972B;">The Problem</h2>
+    <p><code>LLMApiService._request</code> in the <code>ai</code> module declares <code>timeout=30</code>, and the Gemini and OpenAI calls do not override it. A slow answer (large prompt, tool calls) ends with a <code>ReadTimeout</code> <code>UserError</code>.</p>
+
+    <h2 style="color: #F1972B;">The Fix</h2>
+    <p>The module wraps <code>LLMApiService._request</code>. When the caller passes no <code>timeout</code>, the wrapper reads the system parameter and passes it on. A caller that sets its own <code>timeout</code> (audio transcription uses 550) keeps that value.</p>
+
+    <h2 style="color: #F1972B;">Configuration</h2>
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+        <tr style="background: #F1972B; color: #fff;">
+            <th style="padding: 8px; text-align: left;">System parameter</th>
+            <th style="padding: 8px; text-align: left;">Default</th>
+            <th style="padding: 8px; text-align: left;">Meaning</th>
+        </tr>
+        <tr><td style="padding: 8px;"><code>ai.request_timeout</code></td><td style="padding: 8px;">120</td><td style="padding: 8px;">Read timeout in seconds. An empty or non-numeric value falls back to the default.</td></tr>
+    </table>
+    <p>Set it in Settings &gt; Technical &gt; System Parameters. The value takes effect on the next request, with no restart.</p>
+
+    <h2 style="color: #F1972B;">Credits</h2>
+    <p><strong>Authors:</strong> STeSI Consulting<br/>
+    <strong>Contributors:</strong> Michele Di Croce &mdash; dicroce.m@stesi.consulting</p>
+</section>
